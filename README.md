@@ -1,1 +1,1 @@
-Repository for exercises in the fullstack open course.
+Repository for exercises in the fullstack open course. :)
