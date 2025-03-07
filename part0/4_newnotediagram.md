@@ -3,27 +3,29 @@ sequenceDiagram
     participant browser
     participant server
 
-    browser->>server: POST new_note
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
     activate server
     server-->>browser: HTTP status code 302 - URL redirect
     deactivate server
 
-    browser->>server: GET /notes
+    Note right of browser: server asks browser to send new GET request for the location "/notes"
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
     activate server
     server-->>browser: reloaded Notes page
     deactivate server
 
-    browser->>server: GET main.css
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
     activate server
-    server-->>browser: the css file
+    server-->>browser: CSS file
     deactivate server
 
-    browser->>server: GET main.js
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.js
     activate server
     server-->>browser: the JavaScript code
     deactivate server
 
-    browser->>server: GET data.json
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
     activate server
     server-->>browser: the raw data
     deactivate server
