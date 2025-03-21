@@ -1,20 +1,18 @@
-const Hello = (props) => {
-  console.log(props)  
+import Note from './components/Note'
+
+const App = ({ notes }) => {
   return (
     <div>
-      <p>
-        Hello {props.name}, you are {props.age} years old      </p>
+      <h1>Notes</h1>
+      <ul>
+
+        {notes.map(note => 
+          <Note key={note.id} note={note} />
+        )}
+      </ul>
     </div>
   )
 }
-const App = () => {
-  const name = 'Peter'  
-  const age = 10
-  return (
-    <div>
-      <h1>Greetings</h1>
-      <Hello name='Maya' age={26 + 10} />      <Hello name={name} age={age} />    </div>
-  )
-}
+
 
 export default App
