@@ -1,11 +1,20 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import noteService from './services/persons'
 
 const AddNewEntry = ({persons, setPersons, newName, setNewName, newNumber, setNewNumber}) => {
   const addName = (event) => {
     event.preventDefault()
     if (persons.some(e => e.name == newName)){
-      alert(`${newName} is already added to phonebook`)
+      const overwrite = confirm(`${newName} is already added to phonebook, update number to ${newNumber}?`)
+      if (overwrite) {
+        const entry = persons.find(n => n.name == newName)
+        const url = `http://localhost:3001/persons/${entry.id}`
+        const changedEntry = {...entry, number: newNumber}
+        axios.put(url, changedEntry).then(response => {
+          setPersons(persons.map(n => n.id == entry.id ? response.data : n))
+        })
+      }
     }
     else{
 
@@ -13,22 +22,24 @@ const AddNewEntry = ({persons, setPersons, newName, setNewName, newNumber, setNe
       name: newName,
       number: newNumber
     }
+    
+    noteService      
+    .create(nameObject)      
+    .then(returnedName => {        
+      setPersons(persons.concat(returnedName))        
+      setNewName('')
+      setNewNumber('')     
+    })
 
-  setPersons(persons.concat(nameObject))
-  setNewName('')
-  setNewNumber('')
-  console.log(persons)    }
-
-  }
+}}
 
   const handleNameChange = (event) => {
     event.preventDefault()
-    console.log(event.target.value)
     setNewName(event.target.value)
   }
 
   const handleNumberChange = (event) => {
-    console.log(event.target.value)
+    event.preventDefault()
     setNewNumber(event.target.value)
   }
 
@@ -52,22 +63,14 @@ const AddNewEntry = ({persons, setPersons, newName, setNewName, newNumber, setNe
 
 }
 
-const DisplayNames = ({data, persons}) => {
-  
-  const toShow = data !== 1
-    ? data
-    : persons
 
+
+const SingleEntry = ({person, deleteEntry}) => {
   return(
-    <ul>
-    {toShow.map(person =>
-    <li key={person.name}>
-      {person.name} {person.number}
-    </li>
-    )}
-  </ul>
-
-  )
+  <div>
+    {person.name} {person.number} <button onClick={deleteEntry}>delete</button>
+    </div>
+)
 }
 
 const Filter = ({filterInput, setFilterInput}) => {
@@ -88,17 +91,14 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterInput, setFilterInput] = useState('')
-
-  const hook = () => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
-      })
-  }
   
-  useEffect(hook, [])
-
+  useEffect(() => {
+    noteService      
+    .getAll()      
+    .then(initialNames => {        
+      setPersons(initialNames)      
+    })  }, [])
+    
   const Search = () => {
     if (filterInput === ''){
       return 1
@@ -108,7 +108,22 @@ const App = () => {
     return filtered
   }
 
+  const deleteEntryOf = id => {
+    const res = confirm("Wish to delete?")
+    if (res) {
+      const url = `http://localhost:3001/persons/${id}`
+      axios.delete(url).then(response => {
+        setPersons(persons.filter(p => p.id != id))
+      })
+    }
+  } 
+  
+
   const data = Search()
+  const toShow = data !== 1
+    ? data
+    : persons
+
 
   return (
     <div>
@@ -117,7 +132,13 @@ const App = () => {
       <h3>Add number:</h3>
       <AddNewEntry  persons= {persons} setPersons = {setPersons} newName = {newName} setNewName = {setNewName} newNumber = {newNumber} setNewNumber = {setNewNumber} />
       <h2>Numbers</h2>
-      <DisplayNames data = {data} persons = {persons} />
+    <ul>
+    {toShow.map(person =>
+      <li key={person.id}>
+    <SingleEntry person = {person} deleteEntry={() => deleteEntryOf(person.id)} />
+    </li>
+    )}
+  </ul>
     </div>
     
   )
