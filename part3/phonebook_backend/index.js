@@ -2,8 +2,11 @@ const http = require('http')
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
+const cors = require('cors')
 
+app.use(cors())
 app.use(express.json())
+app.use(express.static('dist'))
 
 morgan.token('content', function getContent (request) {
   return (JSON.stringify(request.body))
@@ -33,10 +36,6 @@ let persons = [
       "number": "39-23-6423122"
     }
 ]
-app.get('/', (request, response) => {
-    response.send('<h1>Please go to /api/persons for the phonebook.</h1>')
-  })
-
 
 app.get('/api/persons', (request, response) => {
     response.json(persons)
@@ -97,6 +96,7 @@ app.get('/api/persons', (request, response) => {
     response.json(person)
   })
 
-const PORT = 3001
-app.listen(PORT)
-console.log(`Server running on port ${PORT}`)
+  const PORT = process.env.PORT || 3001
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`)
+  })
