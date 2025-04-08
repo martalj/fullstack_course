@@ -40,8 +40,8 @@ const AddNewEntry = ({persons, setPersons, newName, setNewName, newNumber, setNe
       setUpdateMessage(`${newName} has been added.`)
     })
     .catch(error => {      
-      setErrorMessage(        
-        `The number for '${newName}' can't be found. It is probably already deleted from the server.`      
+      setErrorMessage(     
+        error.response.data.error    
       )
       setPersons(persons.filter(p => p.name != newName))})
 
@@ -124,7 +124,7 @@ const App = () => {
 
   const Error = ({ message }) => {
     setTimeout(() => {          
-      setUpdateMessage(null)        
+      setErrorMessage(null)        
     }, 5000)        
   
     if (message === null) {

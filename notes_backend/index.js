@@ -2,9 +2,11 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 const Note = require('./models/note')
+const cors = require('cors')
 
 app.use(express.json())
 app.use(express.static('dist'))
+app.use(cors())
 const mongoose = require('mongoose')
 const PORT = process.env.PORT
 
@@ -21,24 +23,6 @@ const errorHandler = (error, request, response, next) => {
   next(error)
 }
 
-
-let notes = [
-  {
-    id: "1",
-    content: "HTML is easy",
-    important: true
-  },
-  {
-    id: "2",
-    content: "Browser can execute only JavaScript",
-    important: false
-  },
-  {
-    id: "3",
-    content: "GET and POST are the most important methods of HTTP protocol",
-    important: true
-  }
-]
 
   app.get('/api/notes', (request, response) => {
     Note.find({}).then(notes => {
