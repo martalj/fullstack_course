@@ -1,10 +1,15 @@
+require('dotenv').config()
 const http = require('http')
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
+const Person = require('./models/person')
 
 app.use(express.json())
 app.use(express.static('dist'))
+
+const mongoose = require('mongoose')
+const PORT = process.env.PORT
 
 morgan.token('content', function getContent (request) {
   return (JSON.stringify(request.body))
@@ -36,7 +41,10 @@ let persons = [
 ]
 
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Person.find({}).then(persons => {
+      response.json(persons)
+
+    })
   })
 
   app.get('/info', (request, response) => {
@@ -45,13 +53,10 @@ app.get('/api/persons', (request, response) => {
   })
 
   app.get('/api/persons/:id', (request, response) => {
-    const id = request.params.id
-    const person = persons.find(person => person.id === id)
-    if (person) {    
-        response.json(person)  
-    } else {    
-        response.status(404).end()  
-    }
+    Person.findById(request.params.id).then(person =>{
+      response.json(person)
+    })
+
   })
 
   app.delete('/api/persons/:id', (request, response) => {
@@ -76,24 +81,18 @@ app.get('/api/persons', (request, response) => {
         })
       }
 
-    if (persons.find(e => e.name == body.name)) {
-        return response.status(400).json({
-            error: 'name already in phonebook'
-        })
-    }
   
-    const person = {
-        id: JSON.stringify(Math.floor(Math.random()*100)),
+    const person = new Person({
         name: body.name,
       number: body.number,
-    }
+    })
+
+    person.save().then(savedPerson => {
+      response.json(savedPerson)
+    })
   
-    persons = persons.concat(person)
-  
-    response.json(person)
   })
 
-  const PORT = process.env.PORT || 3001
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
   })
