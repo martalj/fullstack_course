@@ -100,10 +100,49 @@ test('missing url', async () => {
   } 
 
   const response = await api
-  .post('/api/blogs')
-  .send(newBlog)
-  .expect(400)
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
 
+})
+
+test('delete a single blog', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToDelete = blogsAtStart[0]
+
+  await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  const contents = blogsAtEnd.map(n => n.url)
+  assert(!contents.includes(blogToDelete.url))
+
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
+
+  
+})
+
+test('update number of likes', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToUpdate = blogsAtStart[0]
+  const {title, author, url, likes} = blogToUpdate
+
+  const newBlog = {
+    title: title,
+    author: author,
+    url: url,
+    likes: likes+1
+  }
+
+  const response = await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send(newBlog)
+    .expect(201)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtEnd[0].likes, newBlog.likes)
+
+  
 })
 
 after(async () => {
