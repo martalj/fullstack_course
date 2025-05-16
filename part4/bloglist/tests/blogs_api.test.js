@@ -1,5 +1,6 @@
-const { test, after, beforeEach } = require('node:test')
+const { test, after, beforeEach, describe } = require('node:test')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
@@ -143,6 +144,67 @@ test('update number of likes', async () => {
   assert.strictEqual(blogsAtEnd[0].likes, newBlog.likes)
 
   
+})
+
+describe('creating users', () => {
+  beforeEach(async () => {  
+    await User.deleteMany({})  
+  })
+
+    test('add user', async () => {
+    const newUser = {
+      username: "LisaLisa",
+      name: "Lisa",
+      password: "password"
+    }
+  const response = await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(201)
+
+  })
+
+  test('username must be at least 3 characters', async () => {
+    const newUser = {
+      username: "L",
+      name: "Lisa",
+      password: "password"
+    }
+  const response = await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(400)
+  })
+
+    test('passwors must be at least 3 characters', async () => {
+    const newUser = {
+      username: "LisaLisa",
+      name: "Lisa",
+      password: "p"
+    }
+  const response = await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(400)
+  })
+
+  test('username must be unique', async () => {
+    const newUser = {
+      username: "LisaLisa",
+      name: "Lisa",
+      password: "password"
+    }
+  const response = await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(201)
+
+    const response2 = await api
+    .post('/api/users')
+    .send(newUser)
+    .expect(400)
+  })
+
 })
 
 after(async () => {
