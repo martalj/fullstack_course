@@ -2,6 +2,9 @@ POST http://localhost:3001/api/notes/
 Content-Type: application/json
 
 {
-    "content": "Postman is good in testing backend",
-    "important": true
+    "title": "Blog",
+    "author": "Bloggo Blogman",
+    "url": "bloggosblog.com",
+    "likes": 1,
+    "user": 681e13331c4e886f66dbf163
 }

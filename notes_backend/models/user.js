@@ -1,22 +1,17 @@
 const mongoose = require('mongoose')
-const Blog = require('../models/blog')
 
-const userSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        required: true,
-        unique: true,
-        minLength: 3
-      },
-      name: String,
-  passwordHash: {
+const userSchema = mongoose.Schema({
+  username: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
-  blogs: [
+  name: String,
+  passwordHash: String,
+  notes: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Blog'
+      ref: 'Note'
     }
   ],
 })
