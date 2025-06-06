@@ -1,6 +1,7 @@
 POST http://localhost:3003/api/blogs/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFuYW5hcyIsImlkIjoiNjgyNzU3ZWYxZDE4NWZkN2Y0ZjcxOGM4IiwiaWF0IjoxNzQ3NDA5MTY3fQ.mlt7HcwEEyhN9iQnSbcadRoXtjL9_i9wqbSf9lS8AkE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFuYW5hcyIsImlkIjoiNjgyNzU3ZWYxZDE4NWZkN2Y0ZjcxOGM4IiwiaWF0IjoxNzQ4MDExMTgwfQ.mR8UekpGzKpQF1pZM6zVvEE88aBgdCl4Lxtf8F56WRM
+
 {
     "title": "Da Blog",
     "author": "DaBlogger",
